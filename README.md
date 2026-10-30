@@ -17,7 +17,7 @@ claude plugin install as-shk-elektro@automate-structure
 
 ## Was genau angekommen ist, nachpruefen
 
-`releases/as-shk-elektro/1.2.0/source-index.json` nennt jede ausgelieferte Datei mit Bytes und sha256, dazu die
+`releases/as-shk-elektro/1.2.1/source-index.json` nennt jede ausgelieferte Datei mit Bytes und sha256, dazu die
 Revision, aus der sie gebaut wurde. Vergleichen:
 
 ```bash
