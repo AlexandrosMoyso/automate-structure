@@ -1,0 +1,286 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://automate-structure.de/schema/ist-zustand-1.3.0.json",
+  "title": "Ist-Zustand",
+  "description": "Ausgabevertrag von ist-aufnahme, Eingabevertrag von prozesslandkarte. Gehärtet am 15.10.2026 nach dem ersten Lauf auf echtem Mandatsmaterial; jede Änderung gegenüber 1.0.0 geht auf einen dort gemessenen Befund zurück. 1.2.0 (16.10.2026) hat genau eine Änderung: 'prozesse[].schritte' trägt jetzt den Status-Mantel von 'fakt'. Anlass war ein Eval-Lauf, in dem 1.1.0 Schritte für JEDEN Prozess verlangte, während der Skill verlangt, nur Genanntes aufzuschreiben — bei 'das Mahnwesen macht die Büroleitung irgendwie' gibt es keine Schritte, und der Vertrag widersprach sich selbst.",
+
+  "$defs": {
+    "fakt": {
+      "type": "object",
+      "description": "Ein Wert kommt nie allein. BEGRÜNDUNG: im Lauf vom 15.10. bedeutete ein leeres dauer_min gleichzeitig 'nie gemessen' und 'hier nicht anwendbar'. Ein Feld, das für zwei Zustände denselben Wert zeigt, prüft nichts. Der nachfolgende Skill muss sehen können, welche Zahl belegt ist, BEVOR sie in einem Angebot landet.",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "wert": { "description": "Pflicht bei gemessen und geschaetzt. Bei nicht_erhoben und nicht_zutreffend sind FEHLEN und null GLEICHBEDEUTEND — der Status sagt bereits alles, ein ausdrückliches null trägt dort nichts. Beides ist erlaubt, keines ist besser." },
+        "status": {
+          "enum": ["gemessen", "geschaetzt", "nicht_erhoben", "nicht_zutreffend"],
+          "description": "gemessen = aus einem System, einer Zählung oder einer Zeitnahme. geschaetzt = jemand hat eine Zahl genannt, ohne sie gemessen zu haben. nicht_erhoben = wurde nicht gefragt oder nicht beantwortet. nicht_zutreffend = gibt es in diesem Betrieb nicht."
+        },
+        "quelle": {
+          "type": "string",
+          "description": "Pflicht bei gemessen und geschaetzt. Ein Satz: wer hat es gesagt, woraus abgeleitet. 'Büroleitung im Gespräch am 14.10.' oder 'aus Blatt Import, 1138 Zeilen gezählt'."
+        }
+      }
+    },
+
+    "nachfrage": {
+      "type": "object",
+      "description": "Eine Frage an jemanden außerhalb des Inhabers. Ab 1.3.0 als eigene Definition, weil 'nachfragen' den Status-Mantel trägt und die Liste deshalb unter 'wert' steht.",
+      "required": ["rolle", "frage"],
+      "additionalProperties": false,
+      "properties": {
+        "rolle": { "type": "string", "description": "Büroleitung, Steuerberater, Softwareanbieter, Lohnbuchhaltung — als Rolle, nicht als Name." },
+        "intern": { "type": "boolean" },
+        "frage": { "type": "string" },
+        "blockiert": { "type": "string" }
+      }
+    },
+
+    "schritt": {
+      "type": "object",
+      "description": "Ein einzelner Arbeitsschritt. Ab 1.2.0 als eigene Definition, weil 'schritte' den Status-Mantel von 'fakt' trägt und die Liste deshalb unter 'wert' steht.",
+      "required": ["nr", "was", "rolle", "system"],
+      "additionalProperties": false,
+      "properties": {
+        "nr": { "type": "integer" },
+        "was": { "type": "string" },
+        "rolle": { "type": "string", "description": "Verweis auf rollen[].id" },
+        "system": { "type": "string", "description": "Verweis auf systeme[].id, oder 'papier' / 'kopf'" },
+        "dauer_min": { "$ref": "#/$defs/fakt" },
+        "haeufigkeit_pro_woche": { "$ref": "#/$defs/fakt" },
+        "wartezeit_tage": { "$ref": "#/$defs/fakt" }
+      }
+    },
+
+    "station": {
+      "type": "object",
+      "required": ["system", "rolle"],
+      "additionalProperties": false,
+      "properties": {
+        "system": { "type": "string", "description": "Verweis auf systeme[].id, oder 'papier' / 'kopf' für nicht-digitale Stationen." },
+        "rolle": {
+          "enum": ["quelle", "kruecke", "ziel"],
+          "description": "quelle = hier entsteht die Information. ziel = hier soll sie hin. kruecke = Zwischenstation, die nur existiert, weil Quelle und Ziel nicht miteinander reden. BEGRÜNDUNG: genau diese Unterscheidung ging im Paar-Format verloren — wer zwei Paare liest, automatisiert die Krücke, statt sie zu entfernen."
+        },
+        "form": { "type": "string", "description": "In welcher Form die Information hier vorliegt: Datei, Ausdruck, App-Maske, Zuruf." },
+        "handgriff": { "type": "string", "description": "Was ein Mensch zwischen dieser und der nächsten Station tut: abtippen, exportieren, ausdrucken, weiterleiten. Leer, wenn es automatisch geschieht." }
+      }
+    }
+  },
+
+  "type": "object",
+  "required": ["schema_version", "unternehmen", "aufnahme", "systeme", "rollen", "prozesse", "ketten", "wuensche", "offen", "nachfragen"],
+  "additionalProperties": false,
+
+  "properties": {
+    "schema_version": { "const": "1.3.0" },
+
+    "unternehmen": {
+      "type": "object",
+      "description": "Trägt mehrere Gesellschaften, Standorte und Bereiche. BEGRÜNDUNG: 1.0.0 kannte betrieb im Singular mit EINEM gewerk. Im Lauf hatte der Mandant acht Gesellschaften, drei Geschäftsbereiche und mehrere Filialen — die Struktur ging komplett verloren, und mit ihr der Multiplikator jeder Ersparnisrechnung.",
+      "required": ["name", "gesellschaften", "standorte", "bereiche"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "gesellschaften": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "zweck": { "type": "string" }
+            }
+          }
+        },
+        "standorte": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "name"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "kennung": { "type": "string", "description": "interne Nummer, z. B. Filialkennung" },
+              "gesellschaft": { "type": "string" }
+            }
+          }
+        },
+        "bereiche": {
+          "type": "array",
+          "description": "Geschäftsbereiche, die keinen Ablauf teilen.",
+          "items": {
+            "type": "object",
+            "required": ["id", "name"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" }
+            }
+          }
+        },
+        "mitarbeiter_gesamt": { "$ref": "#/$defs/fakt" }
+      }
+    },
+
+    "aufnahme": {
+      "type": "object",
+      "required": ["datum", "grundlage"],
+      "additionalProperties": false,
+      "properties": {
+        "datum": { "type": "string" },
+        "aufgenommen_von": { "type": "string" },
+        "grundlage": {
+          "enum": ["gespraech_vor_ort", "gespraech_fern", "protokoll", "unterlagen", "gemischt"],
+          "description": "Woraus die Aufnahme entstand. BEGRÜNDUNG: ob eine Wunschliste oder ein geführtes Gespräch zugrunde lag, ändert die Belastbarkeit von allem. 1.0.0 hatte dafür kein Feld."
+        },
+        "gespraechspartner_rollen": { "type": "array", "items": { "type": "string" } },
+        "dauer_min": { "$ref": "#/$defs/fakt" }
+      }
+    },
+
+    "systeme": {
+      "type": "array",
+      "description": "ALLE Systeme, auch die, die in keinem Prozess vorkommen. BEGRÜNDUNG: der Lauf war blind für vier Systeme, weil nichts danach fragte.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "zweck"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "zweck": { "type": "string" },
+          "gesellschaften": { "type": "array", "items": { "type": "string" } },
+          "zustand": {
+            "type": "object",
+            "description": "Werkzeugzustand. BEGRÜNDUNG: im Lauf war der belastbarste Einzelbefund, dass eine Arbeitsmappe auf zwei fremde Dateien zeigt (eine aus 2017 in einem Temp-Ordner). 1.0.0 hatte dafür keinen Ort — er landete als Frage unter den offenen Punkten statt als Befund.",
+            "additionalProperties": false,
+            "properties": {
+              "herkunft": { "type": "string" },
+              "zuletzt_gepflegt": { "type": "string" },
+              "wer_kann_aendern": { "type": "string", "description": "Rolle, nicht Name." },
+              "maengel": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+
+    "rollen": {
+      "type": "array",
+      "description": "ROLLEN, KEINE NAMEN. BEGRÜNDUNG: dieses Format reist zum nächsten Skill und möglicherweise weiter. Ein Pflichtfeld, das nur mit Klarnamen füllbar ist, macht aus dem Übergabeformat ein personenbezogenes Dokument. Existiert eine Rolle nur einmal, ist die Rolle die Kennung. Klarnamen gehören ins Kundendokument, das beim Betrieb bleibt.",
+      "items": {
+        "type": "object",
+        "required": ["id", "bezeichnung"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "bezeichnung": { "type": "string", "description": "z. B. 'Büroleitung', 'Inhaber', 'Monteur'. Kein Vorname, kein Nachname." },
+          "bereich": { "type": "string" },
+          "anzahl_personen": { "$ref": "#/$defs/fakt" },
+          "unersetzlich_bei": { "type": "array", "items": { "type": "string" } },
+          "was_faellt_aus_wenn_abwesend": { "$ref": "#/$defs/fakt" }
+        }
+      }
+    },
+
+    "prozesse": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "schritte"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "bereich": { "type": "string" },
+          "ausloeser": { "type": "string" },
+          "ergebnis": { "type": "string" },
+          "laeuft_je": {
+            "enum": ["unternehmen", "gesellschaft", "standort", "person"],
+            "description": "Bezugsgröße des Multiplikators."
+          },
+          "multiplikator": {
+            "allOf": [{ "$ref": "#/$defs/fakt" }],
+            "description": "Wie oft dieser Prozess parallel existiert. BEGRÜNDUNG: dieselbe Arbeit mal acht ist ein anderes Projekt als mal eins. Ohne dieses Feld ist jede Ersparnis um den Faktor der Standorte falsch."
+          },
+          "schritte": {
+            "allOf": [
+              { "$ref": "#/$defs/fakt" },
+              { "properties": { "wert": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/schritt" } } } }
+            ],
+            "description": "PFLICHTFELD, auch wenn niemand Schritte genannt hat. Dann: {\"status\": \"nicht_erhoben\"} — der Prozess bleibt ein Eintrag. BEGRÜNDUNG, ab 1.2.0: 'schritte' optional zu machen hieße, dass ein fehlendes Feld wieder gleichzeitig 'nicht gefragt' und 'gibt es nicht' bedeutet — genau die Mehrdeutigkeit, die der Status-Mantel bei den Zahlenfeldern beseitigt hat. Ein eigenes Flag wie 'schritte_nicht_erhoben' wäre eine ZWEITE Mechanik für etwas, das die erste schon kann. Für prozesslandkarte ist dieser Fall der wichtigste von allen: ein Prozess ohne Schritte ist entweder eine Lücke in der Aufnahme (nicht_erhoben) oder ein Prozess aus einem einzigen Handgriff (dann steht dieser eine Schritt unter 'wert', mit Status gemessen oder geschaetzt). Die beiden zu verwechseln kostet eine falsche Prozesslandkarte."
+          },
+          "schmerzgrad": { "$ref": "#/$defs/fakt" },
+          "schmerz_zitat": { "type": "string" },
+          "monatsende_rueckstand": { "$ref": "#/$defs/fakt" }
+        }
+      }
+    },
+
+    "ketten": {
+      "type": "array",
+      "description": "Medienbrüche als KETTE, nicht als Paar. Ein Eintrag beschreibt den ganzen Weg einer Information mit allen Zwischenstationen. BEGRÜNDUNG: im Paar-Format zerfiel MEP → Excel → Datev in zwei Einträge, und der Zusammenhang ging verloren — dass die Mitte nur existiert, weil die Enden nicht reden. Umgekehrt erzeugte das Paar-Format Scheinbrüche: Formelketten innerhalb einer Datei sahen aus wie Übertragungen.",
+      "items": {
+        "type": "object",
+        "required": ["id", "was", "stationen"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "was": { "type": "string", "description": "Welche Information den Weg nimmt." },
+          "prozess": { "type": "string" },
+          "stationen": {
+            "type": "array",
+            "minItems": 2,
+            "items": { "$ref": "#/$defs/station" }
+          },
+          "haeufigkeit_pro_woche": { "$ref": "#/$defs/fakt" },
+          "minuten_je_mal": { "$ref": "#/$defs/fakt" },
+          "multiplikator": { "$ref": "#/$defs/fakt" }
+        }
+      }
+    },
+
+    "wuensche": {
+      "type": "array",
+      "description": "Was der Betrieb sich wünscht, getrennt von dem, was er tut. BEGRÜNDUNG: im Lauf war die Eingabe eine Wunschliste; als Prozess formatiert sah sie belastbarer aus, als sie war. Durchgestrichene Punkte heißen 'geparkt', nicht 'verworfen' — eine Information über Prioritäten, die 1.0.0 nicht halten konnte.",
+      "items": {
+        "type": "object",
+        "required": ["text", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "text": { "type": "string" },
+          "status": { "enum": ["offen", "geparkt", "erledigt"] },
+          "bereich": { "type": "string" },
+          "quelle": { "type": "string" }
+        }
+      }
+    },
+
+    "offen": {
+      "type": "array",
+      "description": "Was nicht erhoben werden konnte, mit der Angabe, was daran hängt.",
+      "items": {
+        "type": "object",
+        "required": ["frage", "blockiert"],
+        "additionalProperties": false,
+        "properties": {
+          "frage": { "type": "string" },
+          "blockiert": { "type": "string", "description": "Was ohne diese Antwort nicht möglich ist." },
+          "rolle": { "type": "string", "description": "Wer sie beantworten kann — als Rolle." }
+        }
+      }
+    },
+
+    "nachfragen": {
+      "allOf": [
+        { "$ref": "#/$defs/fakt" },
+        { "properties": { "wert": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nachfrage" } } } }
+      ],
+      "description": "Wen man noch fragen muss, über den Inhaber hinaus. BEGRÜNDUNG: im Lauf lagen fünf von sieben tragenden Antworten NICHT beim Inhaber, sondern bei der Büroleitung, beim Steuerberater und beim Softwareanbieter. Das ist der Normalfall, nicht der Sonderfall — und der Skill produzierte dafür bisher kein Artefakt. AB 1.3.0 MIT STATUS-MANTEL, und zwar als STRUKTURregel: entweder Einträge unter 'wert', oder {\"status\": \"nicht_zutreffend\", \"quelle\": \"<Begründung>\"} — leer ohne Aussage ist ungültig. ANLASS: bis 1.2.0 iterierte der Prüfer über die Liste und prüfte bei einer LEEREN nichts; eine leere Liste galt als gültig. Das sah geprüft aus und war es nicht. Hier ist 'quelle' auch bei nicht_zutreffend und nicht_erhoben PFLICHT — anders als bei den Zahlenfeldern, denn 'niemand außer dem Inhaber muss gefragt werden' ist eine starke Behauptung über einen Betrieb und braucht ihren Grund. Keine zweite Mechanik: derselbe Mantel wie bei 'schritte', nur mit dieser einen Verschärfung."
+    }
+  }
+}

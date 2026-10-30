@@ -1,0 +1,16 @@
+{
+  "name": "as-shk-elektro",
+  "version": "1.2.0",
+  "description": "Prozessaufnahme und Automatisierung fuer SHK- und Elektrobetriebe: Ist-Aufnahme, Prozesslandkarte, Automatisierungs-Backlog mit Zeitersparnis je Position, n8n-Umsetzung, Uebergabe und Wirksamkeitsnachweis.",
+  "author": {
+    "name": "Automate Structure"
+  },
+  "keywords": [
+    "handwerk",
+    "shk",
+    "elektro",
+    "prozessaufnahme",
+    "automatisierung",
+    "n8n"
+  ]
+}

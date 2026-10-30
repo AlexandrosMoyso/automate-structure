@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://automate-structure.de/schema/prozesslandkarte-1.0.0.json",
+  "title": "Prozesslandkarte",
+  "description": "Ausgabevertrag von prozesslandkarte, Eingabevertrag von automatisierungs-backlog. ENTSTANDEN AM 19.10.2026, zusammen mit seinem Verbraucher — nicht vorher. prozesslandkarte stand bewusst auf 0.1.0 OHNE maschinenlesbare Übergabe, weil ein Vertrag ohne Verbraucher eine Vermutung ist: er wäre an dem Tag falsch, an dem der Backlog gebaut wird, und nichts würde ihn ablehnen. Belegt am kleineren Fall var(--danger, #d60000) — sieben Verweise, Token nirgends definiert, keine Beschwerde. Dieselbe Mechanik wie ist-zustand.schema.json: ein Fakt kommt nie allein.",
+
+  "$defs": {
+    "fakt": {
+      "type": "object",
+      "description": "Wie in ist-zustand.schema.json. Keine zweite Mechanik — dieselbe, damit ein Leser nicht zwei Formen lernen muss.",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "wert": { "description": "Pflicht bei gemessen und geschaetzt. Bei nicht_erhoben und nicht_zutreffend sind FEHLEN und null gleichbedeutend." },
+        "status": {
+          "enum": ["gemessen", "geschaetzt", "nicht_erhoben", "nicht_zutreffend"],
+          "description": "gemessen = aus einem System, einer Zählung oder einer Zeitnahme. geschaetzt = jemand hat eine Zahl genannt, ohne sie zu messen. nicht_erhoben = nicht gefragt oder nicht beantwortet. nicht_zutreffend = gibt es hier nicht."
+        },
+        "quelle": { "type": "string", "description": "Pflicht bei gemessen und geschaetzt. Ein Satz: wer hat es gesagt, woraus abgeleitet." }
+      }
+    },
+
+    "messgroesse": {
+      "type": "object",
+      "required": ["zahl", "woher", "entscheidet"],
+      "additionalProperties": false,
+      "properties": {
+        "zahl": { "type": "string", "description": "Welche Zahl fehlt, z. B. 'Dauer je Angebot'." },
+        "woher": { "type": "string", "description": "Bei wem oder woraus sie zu holen ist." },
+        "entscheidet": { "type": "string", "description": "Was sie entscheidet. BEGRÜNDUNG: eine Zahl ohne Folge ist Neugier, nicht ein Messplan." }
+      }
+    },
+
+    "position": {
+      "type": "object",
+      "required": ["id", "name", "art", "betrifft", "ersparnis", "rang", "rang_begruendung"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "art": {
+          "enum": ["kruecke_entfernen", "schritt_automatisieren", "prozess_ordnen"],
+          "description": "kruecke_entfernen = eine Zwischenstation fällt weg, weil die Enden direkt reden. schritt_automatisieren = ein Handgriff entfällt, die Stationen bleiben. prozess_ordnen = nichts wird automatisiert, der Ablauf wird eindeutig. BEGRÜNDUNG FÜR DIE ERSTE ART: eine Krücke wird ENTFERNT, nicht bedient. Wer sie automatisiert, verkauft dem Betrieb die Station ein zweites Mal — das ist der Kern des Geschäftsmodells, nicht eine Feinheit."
+        },
+        "betrifft": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prozesse": { "type": "array", "items": { "type": "string" }, "description": "Verweise auf prozesse[].id im Ist-Zustand." },
+            "ketten": { "type": "array", "items": { "type": "string" }, "description": "Verweise auf ketten[].id im Ist-Zustand." }
+          }
+        },
+        "entfernt": { "type": "string", "description": "Was konkret wegfällt. Bei art=kruecke_entfernen PFLICHT im Prüfer: wenn nichts wegfällt, ist es keine Krücken-Position." },
+        "blockiert_durch": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Offene Fragen, die die Machbarkeit entscheiden — meist aus offen[] oder nachfragen[] des Ist-Zustands. Eine Position ohne Blocker ist möglich; eine Position, die einen verschweigt, ist eine Zusage, die niemand gegeben hat."
+        },
+        "ersparnis": {
+          "allOf": [{ "$ref": "#/$defs/fakt" }],
+          "description": "PFLICHTFELD mit Status-Mantel, und fast immer nicht_erhoben. BEGRÜNDUNG: eine Landkarte mit ROI-Spalte sieht professionell aus; eine ROI-Spalte über nicht erhobenen Feldern ist eine Erfindung mit Tabellenrand. Eine Zahl hier verlangt status gemessen UND eine quelle, die auf ein gemessenes Feld des Ist-Zustands zeigt."
+        },
+        "rang": { "type": "integer", "minimum": 1, "description": "1 ist zuerst." },
+        "rang_begruendung": { "type": "string", "description": "Nach welchem Maßstab. Zulässig sind schmerzgrad, ein Zitat des Inhabers, die Anzahl der Krücken, oder ausdrücklich 'Einschätzung, nicht Rechnung'. NICHT zulässig ist eine erfundene Zahl." }
+      }
+    }
+  },
+
+  "type": "object",
+  "required": ["schema_version", "quelle", "positionen", "messplan", "nicht_angefasst"],
+  "additionalProperties": false,
+
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "quelle": {
+      "type": "object",
+      "required": ["ist_zustand_schema", "geprueft"],
+      "additionalProperties": false,
+      "properties": {
+        "ist_zustand_schema": { "type": "string", "description": "Fassung des Ist-Zustands, aus dem diese Landkarte entstand." },
+        "geprueft": {
+          "enum": ["pruefer", "von_hand"],
+          "description": "WIE die Eingabe geprüft wurde. PFLICHT, weil Schweigen über den eigenen Prüfweg der Fehler ist: eine Landkarte, die ihre Grundlage verschweigt, ist nicht nachvollziehbar. Gemessen am 18.10.2026 — dieses Merkmal trennte 3:0 gegen 0:3."
+        },
+        "aufnahme_datum": { "type": "string" }
+      }
+    },
+    "positionen": {
+      "allOf": [
+        { "$ref": "#/$defs/fakt" },
+        { "properties": { "wert": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/position" } } } }
+      ],
+      "description": "Mit Status-Mantel. Keine Positionen zu haben ist eine AUSSAGE: {\"status\":\"nicht_zutreffend\",\"quelle\":\"<Grund>\"}, und quelle ist dort Pflicht. BEGRÜNDUNG wie bei nachfragen in ist-zustand 1.3.0: 'hier ist nichts zu holen' ist eine starke Behauptung über einen Betrieb und braucht ihren Grund."
+    },
+    "messplan": {
+      "allOf": [
+        { "$ref": "#/$defs/fakt" },
+        { "properties": { "wert": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/messgroesse" } } } }
+      ],
+      "description": "Was gemessen werden muss, bevor sich etwas rechnen lässt. Mit Status-Mantel; leer nur als Aussage mit quelle."
+    },
+    "nicht_angefasst": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["prozess", "grund"],
+        "additionalProperties": false,
+        "properties": {
+          "prozess": { "type": "string", "description": "Verweis auf prozesse[].id." },
+          "grund": { "type": "string", "description": "Warum keine Position daraus wurde." }
+        }
+      },
+      "description": "PFLICHTABSCHNITT, auch wenn leer. Jeder Prozess des Ist-Zustands, aus dem KEINE Position wurde, steht hier mit Grund. BEGRÜNDUNG, Dauerregel 28: was still wegfallen kann, muss ausdrücklich behauptet werden. Ohne diesen Abschnitt verschwindet die Hälfte des Betriebs unbemerkt — gemessen am 18.10., wo fünf von zehn Prozessen 'schritte: nicht_erhoben' trugen und genau die riskanteren waren."
+    }
+  }
+}
