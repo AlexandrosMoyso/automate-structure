@@ -10,7 +10,7 @@ Mandate hinweg, ob die Kette trägt. Eine einzelne Zeile sagt das nicht.
 
 **Warum eine Protokollzeile und kein Dateischreiben im Skill:** ein Schreibversuch kann
 still scheitern — im Eval-Sandkasten gibt es keinen beschreibbaren Pfad, beim Kunden
-vielleicht keine Rechte. Eine Zeile in der Antwort scheitert nie still (Dauerregel 23).
+vielleicht keine Rechte. Eine Zeile in der Antwort scheitert nie still.
 Das Anhängen macht, wer die Kette fährt.
 
 Entstanden am 20.10.2026, zusammen mit dem Übergabevertrag — bei zwei Skills kostet es

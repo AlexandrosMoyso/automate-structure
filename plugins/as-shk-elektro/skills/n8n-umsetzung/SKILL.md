@@ -49,7 +49,7 @@ Zeile den Fund trägt, und dass der Backlog sie nachziehen muss.**
 # ① Das Workflow-JSON — und wer über seine Gültigkeit entscheidet
 
 **Es gibt kein eigenes Schema und keinen eigenen Prüfer dafür. Das ist entschieden, nicht
-abzuwägen.** `n8n-workflow-check` bringt seinen eigenen mit (Konvention 18: sieh nach, ob
+abzuwägen.** `n8n-workflow-check` bringt seinen eigenen mit (sieh nach, ob
 der Gegenstand die Prüfung mitbringt).
 
 ```bash
@@ -132,7 +132,7 @@ nicht wie eine Aussage. Der Ausweg muss im selben Atemzug dastehen.
 
 `runtime_verified: false` kommt aus dem Prüfer selbst. Schreib es nicht auf `true` um.
 
-## Die Reihenfolge ist Dauerregel 4, nicht meine Erfindung
+## Die Reihenfolge ist verbindlich, nicht meine Erfindung
 
 > **„Erst Staging, dann Kunde. Validieren vor deploy. Schreibzugriffe nur mit Freigabe."**
 
@@ -147,7 +147,7 @@ Daraus folgt für jeden Workflow, in dieser Reihenfolge: **validieren → Stagin
   bestehende Datenbank des Kunden, und nichts darin wird zurückgesetzt.
 - **Zugangsdaten bleiben in der n8n-Instanz des Kunden.** Keine Keys ins JSON, keine
   `Authorization`-Werte, keine Bitte an den Kunden, einen Key in den Chat zu schreiben
-  (Dauerregel 2: Kundendaten nie über Fremd-Clouds).
+  (Kundendaten nie über Fremd-Clouds).
 
 ---
 

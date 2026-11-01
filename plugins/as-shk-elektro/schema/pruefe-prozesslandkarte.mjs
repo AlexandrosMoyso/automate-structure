@@ -110,7 +110,7 @@ if (!Array.isArray(d.nicht_angefasst)) {
 
 // ---------------------------------------------------------------------------
 // Gegen den Ist-Zustand, falls er mitgegeben wird: KEIN Prozess darf still
-// verschwinden. Dauerregel 28 — was still wegfallen kann, muss ausdruecklich
+// verschwinden: was still wegfallen kann, muss ausdruecklich
 // behauptet werden.
 // ---------------------------------------------------------------------------
 if (istPfad) {

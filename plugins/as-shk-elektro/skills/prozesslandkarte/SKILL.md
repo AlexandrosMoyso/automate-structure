@@ -238,7 +238,7 @@ Prozess still verschwunden ist.** Tu das.
 3. **Bei `art: "kruecke_entfernen"` ist `entfernt` Pflicht.** Fällt nichts weg, wird die
    Krücke bedient statt entfernt — genau der Fehler, gegen den das Kettenformat gebaut wurde.
 4. **Jeder Prozess des Ist-Zustands steht in einer Position ODER in `nicht_angefasst`.**
-   Mit Grund. Dauerregel 28: was still wegfallen kann, muss ausdrücklich behauptet werden.
+   Mit Grund: was still wegfallen kann, muss ausdrücklich behauptet werden.
    Der Prüfer rechnet das gegen den Ist-Zustand nach, wenn du ihn mitgibst.
 
 **Leere Listen sind Aussagen.** Keine Positionen zu haben heißt
@@ -260,8 +260,8 @@ Reihe, nicht in der letzten Zeile.
 
 **WARUM EINE PROTOKOLLZEILE UND KEIN DATEISCHREIBEN:** ein Schreibversuch kann still
 scheitern — im Eval-Sandkasten gibt es keinen beschreibbaren Pfad, beim Kunden vielleicht
-keine Rechte. Eine Zeile in der Antwort scheitert nie still. **Dauerregel 23: ein
-Prüfwerkzeug darf nie schweigen, wenn es nicht prüfen konnte** — dasselbe gilt für ein
+keine Rechte. Eine Zeile in der Antwort scheitert nie still. **Ein Prüfwerkzeug darf nie
+schweigen, wenn es nicht prüfen konnte** — dasselbe gilt für ein
 Messwerkzeug.
 
 **WARUM ÜBERHAUPT:** die Zahl der Krücken, die eine Landkarte findet, und die Zahl der

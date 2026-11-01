@@ -1,0 +1,70 @@
+{
+  "plugin": "as-shk-elektro",
+  "version": "1.2.2",
+  "tag": "as-shk-elektro-v1.2.2",
+  "release_commit": "b30a9d4bffc5dd10801c3a3ac60758438c290be5",
+  "entwicklungs_commit": "c0f4d3d460d9d689a6f75eafe904c336194ff289",
+  "entwicklungs_zweig": "main",
+  "arbeitsbaum_sauber": true,
+  "erzeugt_von": "scripts/release.mjs",
+  "gebaut_am": "2026-11-01",
+  "entfernt_aus_dem_lieferbaum": 75,
+  "dateien": {
+    ".claude-plugin/plugin.json": {
+      "bytes": 459,
+      "sha256": "96fd53a88acc046fd0d8cbd51a17aa4f581fb3f655304da65c13de379996cac8"
+    },
+    "kennzahlen/LIESMICH.md": {
+      "bytes": 913,
+      "sha256": "1530f6966a31a2b89e573b4890012d84cce4ebe9e0d0a56e1813a88d90fbd979"
+    },
+    "schema/ist-zustand.schema.json": {
+      "bytes": 15634,
+      "sha256": "2bd9c9fd32a95ae8b8ca4f80fb643463a11e23e06837c5cb2873d1ff48aae486"
+    },
+    "schema/prozesslandkarte.schema.json": {
+      "bytes": 7390,
+      "sha256": "d901b39f83ac40134b8762b538cfb14920b8cff8926c69f72e9ba1e0504885e1"
+    },
+    "schema/pruefe-backlog-antwort.mjs": {
+      "bytes": 8769,
+      "sha256": "18cae50659e1d583e55b71678524308024565da407a640bc2b9fb02d913419fe"
+    },
+    "schema/pruefe-ist-zustand.mjs": {
+      "bytes": 15636,
+      "sha256": "4f5be67bceaab4dec1c8b5e7c5c86a6b3f7f24c6a390133a534c54ff0345d3aa"
+    },
+    "schema/pruefe-kennzahl.mjs": {
+      "bytes": 9250,
+      "sha256": "0430adc2aaac49e9d66a90b50d2d6f3d25400a5889a910b2836687859081d8b4"
+    },
+    "schema/pruefe-prozesslandkarte.mjs": {
+      "bytes": 8387,
+      "sha256": "e50240b1d2b9d8b3d6b64ade4dfc6d9936330c6b31078289cfd2917189d8c0e2"
+    },
+    "skills/automatisierungs-backlog/SKILL.md": {
+      "bytes": 9105,
+      "sha256": "a43fd66dc46e356657a2f8d516cdd5cec86eeabb01fcea8bbf3947e8ab64dfba"
+    },
+    "skills/ist-aufnahme/SKILL.md": {
+      "bytes": 30378,
+      "sha256": "a28890b7aab3c562443ee0fed1dadb34de2d4d58b5dfb9cd9ecfeaff210f292b"
+    },
+    "skills/n8n-umsetzung/SKILL.md": {
+      "bytes": 9550,
+      "sha256": "8eebcee7d2e825dc57fd3b6ad4655db8b27a08ffb62ea7d678aee03c74366ae6"
+    },
+    "skills/prozesslandkarte/SKILL.md": {
+      "bytes": 12730,
+      "sha256": "aa2c3acdd4c5c3a0c09901dda9f518a3fb26f3b32218ae49e0396ab6504be1dc"
+    },
+    "skills/uebergabe-schulung/SKILL.md": {
+      "bytes": 6794,
+      "sha256": "a9c1baf683313eea4d3e8245d4c3d9cf056daf8658aa0f485155a2336b0267a5"
+    },
+    "skills/wirksamkeitsnachweis/SKILL.md": {
+      "bytes": 9044,
+      "sha256": "24ead445b989ba2be3128d53bbb5bdeea6efff82073bb42f1d8041bd3faba610"
+    }
+  }
+}

@@ -13,7 +13,7 @@
 //   · 240 steht in der EINGABE (messplan der Landkarte, zweimal im Ist-Zustand), und das
 //     Kriterium erlaubte zitierte Eingabe-Zahlen ausdruecklich.
 //   · Die Stimmen waren instabil: PASS FAIL FAIL, FAIL FAIL FAIL, FAIL PASS FAIL.
-// Das ist Konvention 20, auf den eigenen Grader angewandt: was ein Skript mit einem
+// Dieselbe Regel, auf den eigenen Grader angewandt: was ein Skript mit einem
 // Exit-Code entscheiden kann, bekommt keinen zweiten Richter. Die Regel, die der Richter
 // nicht anwenden konnte, stand im Kriterium schon drin - sie ist hier ausgeschrieben.
 //

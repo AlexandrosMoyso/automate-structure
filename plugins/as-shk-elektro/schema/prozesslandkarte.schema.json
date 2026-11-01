@@ -110,7 +110,7 @@
           "grund": { "type": "string", "description": "Warum keine Position daraus wurde." }
         }
       },
-      "description": "PFLICHTABSCHNITT, auch wenn leer. Jeder Prozess des Ist-Zustands, aus dem KEINE Position wurde, steht hier mit Grund. BEGRÜNDUNG, Dauerregel 28: was still wegfallen kann, muss ausdrücklich behauptet werden. Ohne diesen Abschnitt verschwindet die Hälfte des Betriebs unbemerkt — gemessen am 18.10., wo fünf von zehn Prozessen 'schritte: nicht_erhoben' trugen und genau die riskanteren waren."
+      "description": "PFLICHTABSCHNITT, auch wenn leer. Jeder Prozess des Ist-Zustands, aus dem KEINE Position wurde, steht hier mit Grund. BEGRÜNDUNG: was still wegfallen kann, muss ausdrücklich behauptet werden. Ohne diesen Abschnitt verschwindet die Hälfte des Betriebs unbemerkt — gemessen am 18.10., wo fünf von zehn Prozessen 'schritte: nicht_erhoben' trugen und genau die riskanteren waren."
     }
   }
 }

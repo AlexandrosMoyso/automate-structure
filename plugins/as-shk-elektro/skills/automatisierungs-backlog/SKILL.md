@@ -83,7 +83,7 @@ hinzu.
   steht **nicht** vor ihr — eine Reihenfolge, die ihre eigenen Abhängigkeiten verletzt, ist
   keine.
 - **`nicht_angefasst`** der Landkarte wird ein **eigener, benannter Block** unter der
-  Tabelle, mit Grund je Prozess. Dauerregel 28: was still wegfallen kann, muss ausdrücklich
+  Tabelle, mit Grund je Prozess. Was still wegfallen kann, muss ausdrücklich
   behauptet werden.
 
 ---

@@ -5,7 +5,7 @@
 //
 // WARUM ES DAS GIBT, und zwar BEVOR ein Richter danach gefragt wird:
 // Am 21.10.2026 hat ein LLM-Grader in beiden Armen versagt, weil er etwas beurteilen
-// sollte, das ein Skript entscheiden kann (Konvention 20, Konvention 22). Die Lehre wird
+// sollte, das ein Skript entscheiden kann. Die Lehre wird
 // hier angewandt, statt sie noch einmal zu bezahlen: jede Kennzahl-Bedingung, die sich
 // ausrechnen laesst, wird ausgerechnet.
 //
